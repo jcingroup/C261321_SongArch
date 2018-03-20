@@ -1,0 +1,22 @@
+﻿@model ProcCore.Business.Logic.m_Product_Category
+<div id="sidebar">
+
+    <h4>CONSTRUCTION</h4>
+    <dl>
+        @foreach (var md in Model.Product_Category_Fix)
+        {
+            <dt class="sub">@md.Category_Name</dt>
+            foreach (var p in md.Product)
+            {
+                if (p.id == Model.Product_Category_Fix_Product)
+                {
+                    <dd><a class="current" href="~/Products/?id=@p.id">@p.product_name</a></dd>
+                }
+                else
+                {
+                    <dd><a href="~/Products/?id=@p.id">@p.product_name</a></dd>
+                }
+            }
+        }
+    </dl>
+</div><!-- sidebar //-->

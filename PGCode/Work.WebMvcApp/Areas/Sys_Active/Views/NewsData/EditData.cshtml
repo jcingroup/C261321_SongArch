@@ -1,0 +1,233 @@
+﻿@model ProcCore.Business.Logic.m_News
+
+@using ProcCore.JqueryHelp;
+@using ProcCore.JqueryHelp.FormvValidate;
+@using ProcCore.JqueryHelp.CustomButton;
+@using ProcCore.Business.Base;
+
+@section IncludeScript{
+    @Html.Partial("Manage/includeScript_Comm")
+    <script type="text/javascript" src="~/_Code/ckeditor_4.1.2_full/ckeditor.js"></script>
+    <script type="text/javascript" src="~/_Code/ckfinder_aspnet_2.3.1/ckfinder.js"></script>
+    <style>
+        .sel-file {
+            padding: 1px 5px;
+            font-size: smaller;
+            color: grey;
+        }
+
+            .sel-file img {
+                float: left;
+                width: 18px;
+                height: 18px;
+                padding-right: 10px;
+            }
+
+        .progress {
+            display: inline-block;
+            width: 100px;
+            border: 3px groove #CCC;
+        }
+
+            .progress div {
+                font-size: smaller;
+                background-color: #525ae9;
+                width: 0;
+            }
+    </style>
+    <script src="~/_Code/jqScript/angular-file-upload/angular-file-upload-html5-shim.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+    <script src="~/_Code/jqScript/angular-file-upload/angular-file-upload.min.js"></script>
+    <script>
+    var agApp = angular.module('angularApp', ['angularFileUpload']);
+    agApp.controller('ctr_frm', function ($scope, $http, $upload, $timeout) {
+        $scope.uploadRightAway = true;
+        $scope.changeAngularVersion = function () {
+            window.location.hash = $scope.angularVersion;
+            window.location.reload(true);
+        }
+        $scope.hasUploader = function (index) {
+            return $scope.upload[index] != null;
+        };
+        $scope.abort = function (index) {
+            $scope.upload[index].abort();
+            $scope.upload[index] = null;
+        };
+        $scope.angularVersion = window.location.hash.length > 1 ? window.location.hash.substring(1) : '1.2.0';
+        $scope.onFileSelect = function ($files) {
+            $scope.selectedFiles = [];
+            $scope.progress = [];
+            if ($scope.upload && $scope.upload.length > 0) {
+                for (var i = 0; i < $scope.upload.length; i++) {
+                    if ($scope.upload[i] != null) {
+                        $scope.upload[i].abort();
+                    }
+                }
+            }
+            $scope.upload = [];
+            $scope.uploadResult = [];
+            $scope.selectedFiles = $files;
+            $scope.dataUrls = [];
+            for (var i = 0; i < $files.length; i++) {
+                var $file = $files[i];
+                if (window.FileReader && $file.type.indexOf('image') > -1) {
+                    var fileReader = new FileReader();
+                    fileReader.readAsDataURL($files[i]);
+                    function setPreview(fileReader, index) {
+                        fileReader.onload = function (e) {
+                            $timeout(function () {
+                                $scope.dataUrls[index] = e.target.result;
+                            });
+                        }
+                    }
+                    setPreview(fileReader, i);
+                }
+                $scope.progress[i] = -1;
+                if ($scope.uploadRightAway) {
+                    $scope.start(i);
+                }
+            }
+        }
+
+        $scope.start = function (index) {
+            $scope.progress[index] = 0;
+            $scope.upload[index] = $upload.upload({
+                url: 'ajax_UploadFine',
+                headers: { 'myHeaderKey': 'myHeaderVal' },
+                data: {
+                    myModel: $scope.myModel,
+                    id: 1,
+                    FilesKind: 'List'
+                },
+                /* formDataAppender: function(fd, key, val) {
+                    if (angular.isArray(val)) {
+                        angular.forEach(val, function(v) {
+                          fd.append(key, v);
+                        });
+                      } else {
+                        fd.append(key, val);
+                      }
+                }, */
+                file: $scope.selectedFiles[index],
+                fileFormDataName: 'myFile'
+            }).then(function (response) {
+                $scope.uploadResult.push(response.data.result);
+            }, null, function (evt) {
+                $scope.progress[index] = parseInt(100.0 * evt.loaded / evt.total);
+            });
+        }
+    });
+    </script>
+
+}
+@section menu{
+    @Html.Raw(Session["MenuHtmlString"].ToString())
+}
+@{
+    FormValidateSetup val_frm_a = new FormValidateSetup(new jqSelector() { IdName = CommWebSetup.eleNameMasterDataForm });
+    //val_frm_a.Add(Html.FieldsRuleSetup(x => x.title, new FieldRule() { required = true }, null, null));
+    //val_frm_a.Add(Html.FieldsRuleSetup(x => x.set_date, new FieldRule() { required = true, date = true }, null, null));
+
+    jqSelector jq_for_btn_rtn = new jqSelector() { IdName = "btn_return_list" };
+    jqSelector jq_for_btn_sbm = new jqSelector() { IdName = "btn_submit" };
+    jqSelector jq_for_btn_opimgList_fmwk = new jqSelector() { IdName = "btn_opdlg_imgs_list" };
+    jqSelector jq_for_btn_opimgProd_fmwk = new jqSelector() { IdName = "btn_opdlg_imgs_prod" };
+
+    funcMethodModule func = Html.CommSetFormOnSuccesss();
+}
+@using (Ajax.BeginForm(null, null, new AjaxOptions() { Url = Url.Action(CommWebSetup.acNameMasterDataUpdateData), HttpMethod = "post", OnSuccess = func.funcName }, new { id = CommWebSetup.eleNameMasterDataForm, ng_controller = "ctr_frm" }))
+{
+    @Html.HiddenFor(x => x.id, new { @id = "id" })
+    @Html.HiddenFor(x => x.EditType)
+    <input type="hidden" id="returnQueryString" name="returnQueryString" value="@Html.Raw(ViewBag.QueryString)" />
+
+    <div class="@ViewBag.css_Edit_Master_CaptionCss">
+        @ViewBag.Caption
+    </div>
+    <div class="@ViewBag.css_EditFormNoteCss">
+        <input type="file" ng-file-select="onFileSelect($files)" multiple>
+        <div ng-show="selectedFiles != null">
+            <div class="sel-file" ng-repeat="f in selectedFiles">
+                <img ng-show="dataUrls[$index]" ng-src="{{dataUrls[$index]}}">
+                <button class="button" ng-click="start($index)" ng-show="progress[$index] < 0">Start</button>
+                <span class="progress" ng-show="progress[$index] >= 0">
+                    <div style="width:{{progress[$index]}}%">{{progress[$index]}}%</div>
+                </span>
+                <button class="button" ng-click="abort($index)" ng-show="hasUploader($index) && progress[$index] < 100">Abort</button>
+                {{f.name}} - size: {{f.size}}B - type: {{f.type}}
+            </div>
+        </div>
+    </div>
+    <div class="@ViewBag.css_EditFormNoteCss">
+        @Resources.Res.Info_StarMustEdit
+    </div>
+    <fieldset>
+        <legend class="@ViewBag.css_Edit_Subtitle_CaptionCss">@Html.Lang("BaseData")</legend>
+        <table>
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.title)
+                </th>
+                <td>@Html.TextBoxFor(x => x.title, new { maxlength = 64, size = 48, required = "true" })</td>
+            </tr>
+
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.set_date)</th>
+                <td>
+                    <input id="set_date" name="set_date" type="date" value="@Model.set_date.ToString("yyyy-MM-dd")" required />
+                </td>
+            </tr>
+
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.is_open)</th>
+                <td>@Html.RadioButtonFor(x => x.is_open, true)資訊開放 @Html.RadioButtonFor(x => x.is_open, false) 資訊關閉</td>
+            </tr>
+
+        </table>
+    </fieldset>
+    <fieldset>
+        <legend class="@ViewBag.css_Edit_Subtitle_CaptionCss">@Html.Lang("ContextSetup")</legend>
+        @Html.TextAreaFor(x => x.context, 16, 120, null)
+    </fieldset>
+    <div class="@ViewBag.css_EditFormNavigationFunctionCss">
+        <button type="submit" id="@jq_for_btn_sbm.IdName">
+            @(Model.EditType == EditModeType.Insert ? Resources.Res.Button_Sure_Insert : Resources.Res.Button_Sure_Modify)
+        </button>
+        <button type="button" id="@jq_for_btn_rtn.IdName">@Resources.Res.Button_Return</button>
+    </div>
+}
+
+@{
+    //===
+    jqButton btn_sbm_fmwk = new jqButton(new jqSelector() { IdName = jq_for_btn_sbm.IdName });
+    btn_sbm_fmwk.options.icons.primary = FrameworkIcons.ui_icon_check;
+
+    //===
+    jqButton btn_rtn_fmwk = new jqButton(jq_for_btn_rtn);
+    btn_rtn_fmwk.options.icons.primary = FrameworkIcons.ui_icon_arrowreturnthick_1_w;
+
+    jqElementEvent btn_rtn_evt_clk = new jqElementEvent(jq_for_btn_rtn);
+    btn_rtn_evt_clk.events.Add(new jqElementEvent.jqEvents() { htmlElementEvent = HtmlObjectEvent.click, funcString = "document.location.href='" + Url.Action(CommWebSetup.acNameEditFormReturnGridList) + "?' + $('#returnQueryString').val();" });
+    //===
+    jqButton btn_opimgList_fmwk = new jqButton(new jqSelector() { IdName = jq_for_btn_opimgList_fmwk.IdName });
+    btn_opimgList_fmwk.options.icons.primary = FrameworkIcons.ui_icon_arrow_4_diag;
+
+    jqButton btn_opimgProd_fmwk = new jqButton(new jqSelector() { IdName = jq_for_btn_opimgProd_fmwk.IdName });
+    btn_opimgProd_fmwk.options.icons.primary = FrameworkIcons.ui_icon_arrow_4_diag;
+
+}
+<script type="text/javascript">
+    $("@Html.jqId(x=>x.set_date)").datepicker({ "showOtherMonths": true });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        //Html.Raw(btn_sbm_fmwk.ToScriptString())
+        //Html.Raw(btn_rtn_fmwk.ToScriptString())
+        //Html.Raw(btn_rtn_evt_clk.ToScriptString())
+        //Html.Raw(func.ToScriptString())
+        //Html.Raw(Html.SetCommCKEditor2("context", true))
+    });
+    (function ($) {
+    })(jQuery);
+</script>

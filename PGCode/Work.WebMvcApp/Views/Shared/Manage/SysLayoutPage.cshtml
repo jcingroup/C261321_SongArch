@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta charset="UTF-8">
+    <title>@ViewBag.Title</title>
+    @RenderSection("IncludeScript", false)
+    <script type="text/javascript">
+        var gb_approot = '@Url.Content("~")';
+        var gb_area = '@ViewBag.area';
+        var gb_controller = '@ViewBag.controller';
+    </script>
+</head>
+<body ng-app="angularApp">
+    <div id="container">
+        <div id="header"></div>
+        <div id="main">
+            <div id="sidebar">
+                @RenderSection("menu", false)
+            </div>
+            <div id="content">@RenderBody()</div>
+        </div>
+    </div>
+    @Html.Partial("Manage/includeDialog")
+</body>
+</html>

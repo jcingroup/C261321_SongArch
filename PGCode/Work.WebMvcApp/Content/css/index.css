@@ -1,0 +1,62 @@
+﻿@import "base/basic.css";
+@import "base/layout.css";
+
+@charset "utf-8";
+
+/*-- layout --*/
+#container {
+	background: url('../images/bg2.gif') repeat-x 0 651px;
+	}
+#header {
+	height:564px;
+	}
+#main { 
+	margin-top:-25px;
+	}
+
+/*-- header --*/
+#banner li { height:447px; }
+#banner .i1 { background-image:url('../images/index/banner.jpg') }
+#banner .i2 { background-image:url('../images/index/banner2.jpg') }
+#banner .i3 { background-image:url('../images/index/banner3.jpg') }
+
+
+/*-- main --*/
+dl {
+	float:left;
+	background: url('../images/index/introBg.gif') repeat-x 0 bottom;
+	border:1px solid #FFF;
+	width:320px; height:298px;
+	margin-right:7px;
+    overflow:hidden;
+	}
+dl:last-child {
+	margin:0;
+	}
+dt {
+	background: url('../images/index/intro.jpg') no-repeat 0 0;
+	color:#DD6542;
+	font-size:1.65em;
+	font-weight:bold;
+	line-height:130%;
+	padding:166px 12px 0 12px;
+	}
+.intro2 dt { background-image: url('../images/index/intro2.jpg') }
+.intro3 dt { background-image: url('../images/index/intro3.jpg') }
+dt em {
+	color:#CCC;
+	font-size:.7em;
+	}
+dd {
+	background: url('../images/dot.gif') repeat-x 0 bottom;
+	padding:7px 0;
+	margin:0 12px;
+	}
+dd:last-child { background:none; }
+
+dd a {
+	color:#333;
+	}
+dd a:hover {
+	color:#1EBFD1
+	}

@@ -1,0 +1,434 @@
+﻿@model ProcCore.Business.Logic.m_Orders
+
+@using ProcCore.JqueryHelp;
+@using ProcCore.JqueryHelp.FormvValidate;
+@using ProcCore.JqueryHelp.CustomButton;
+@using ProcCore.JqueryHelp.DialogHelp;
+@using ProcCore.JqueryHelp.AddValidator;
+@using ProcCore.JqueryHelp.JQGridScript;
+@using ProcCore.JqueryHelp.AjaxHelp
+@using ProcCore.JqueryHelp.DeferredHelp;
+@using ProcCore.Business.Logic.TablesDescription;
+@using ProcCore.Business.Base;
+
+@section IncludeScript{
+    @Html.Partial("Manage/includeScript_Comm")
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
+    <script>
+        var agApp = angular.module('angularApp', []);
+        agApp.controller('ctr_frm', function ($scope, $http) {
+
+        });
+
+        $(document).ready(function () {
+            $("#order_zip").textbox_key_numeric();
+            $("#order_address").addr_query_tw({ element_zip: $("#order_zip") });
+            $("#receive_address").addr_query_tw({ element_zip: $("#receiver_zip") });
+
+            $('#btn_opdlg_imgs').button({ icons: { primary: 'ui-icon-arrow-4-diag' } });
+            $('#btn_opdlg_fles').button({ icons: { primary: 'ui-icon-arrow-4-diag' } });
+            $('#btn_submit').button({ icons: { primary: 'ui-icon-check' } });
+            $('#btn_return_list').button({ icons: { primary: 'ui-icon-arrowreturnthick-1-w' } })
+                .click(function () {
+                    document.location.href = gb_approot + 'Sys_Active/OderData/ListGrid?' + $('#returnQueryString').val();
+                });
+
+            $.FormResultJson = function (response) {
+                var jsonobj = jQuery.parseJSON(response);
+                if (jsonobj.result) {
+                    $.ajax_RefreshTotal();
+                    $('#EditType').val('Modify');
+                }
+                $.UiMessage(jsonobj);
+            };
+        });
+    </script>
+    @Html.Partial("Manage/includeScript_Grid")
+}
+@section menu{
+    @Html.Raw(Session["MenuHtmlString"].ToString())
+}
+@{
+    Orders Tab = new Orders();
+    Orders_Detail Tabd = new Orders_Detail();
+    //產品序號是否已存在Ajax檢查
+    AjaxValidatorMethod avm_Exist_SN = new AjaxValidatorMethod("Exist_SN_Product") { funcAfter = "return !jsonobj", ErrMessage = Resources.Res.Log_Err_OrderSerialExists };
+    avm_Exist_SN.ajax.url = "ajax_Exist_SN";
+    avm_Exist_SN.ajax.data = new DataModule();
+    //avm_Exist_SN.ajax.data.Add("sn", Html.GVal(x => x.sn_product).ToString());
+
+    //欄位規則檢查設定
+
+    funcMethodModule func = Html.CommSetFormOnSuccesss();
+
+    List<SelectListItem> option_ProductData = (List<SelectListItem>)ViewBag.Option_ProductData;
+
+    FormatterColumnScript f_col_id = new FormatterColumnScript();
+    f_col_id.FunctionName = CommWebSetup.funNameMasterDataFormatterID;
+    f_col_id.FunctionString = Html.GridIDColumnCommScriptContext(CommWebSetup.MasterGridID, Url.Action(CommWebSetup.acNameEditMasterDataByID));
+
+    //以下為選擇產品change時可由ajax拿到產品資料並帶入編輯視窗
+
+    DeferredLive defer = new DeferredLive();
+    defer.deferredName = funcDeferred.done;
+    defer.deferredFunc.funcString = "$('#unit_price').val(data.unit_price);$('#unit_name').val(data.unit_name);$('#currency').val(data.currency)";
+
+    ajaxDeferred ajaxDef = new ajaxDeferred();
+    ajaxDef.deferred.DeferredCollect.Add(defer);
+    ajaxDef.url = Url.Action("ajax_Info_Product");
+    ajaxDef.data.Add("id", "$('#" + Tabd.product_serial.N + "').val()");
+
+    jqGrid.colObject.editOptions.DataEvents dataEvent_change = new jqGrid.colObject.editOptions.DataEvents();
+    dataEvent_change.type = HtmlObjectEvent.change;
+    dataEvent_change.fn.funcString = ajaxDef.ToScriptString();
+
+    //當輸入完數量做blur自動計算小計
+    jqGrid.colObject.editOptions.DataEvents dataEvent_blur = new jqGrid.colObject.editOptions.DataEvents();
+    dataEvent_blur.type = HtmlObjectEvent.blur;
+    dataEvent_blur.fn.funcString = "var subtotal = $('#unit_price').val()*$('#amt').val();$('#subtotal').val(subtotal);";
+
+
+    jqGrid gridObj = Html.jqGrid_Edit(
+CommWebSetup.MasterGridID,
+(String)ViewBag.Caption,
+"0",
+Url.Action(CommWebSetup.acNameMasterSubGridData),
+Url.Action(CommWebSetup.acNameSubDataDelete),
+Url.Action(CommWebSetup.acNameSubDataUpdateData),
+CommWebSetup.MasterGridDefHight, null,
+new MakeColumnModule() { CN = "ids", CM = { name = Tabd.ids.M, editable = true, hidden = true, key = true, editrules = new jqGrid.colObject.editRules() { required = true } } },
+new MakeColumnModule() { CN = Html.GLang(Tabd.item_no), CM = { name = Tabd.item_no.M, editable = false, hidden = false, hidedlg = false, width = "32px" } },
+new MakeColumnModule()
+{
+    CN = Html.GLang(Tabd.product_id),
+    CM =
+    {
+        name = Tabd.product_id.M,
+        editoptions = new jqGrid.colObject.editOptions()
+        {
+            dataEvents = new jqGrid.colObject.editOptions.DataEvents[] { dataEvent_change }
+        },
+        editrules = new jqGrid.colObject.editRules() { required = true, edithidden = false },
+        editable = true,
+        hidden = true,
+        hidedlg = true,
+        width = "30px"
+    }
+},
+new MakeColumnModule()
+{
+    CN = Html.GLang(Tabd.product_name.M),
+    CM =
+    {
+        name = Tabd.product_name.M,
+        editable = true,
+        hidden = false,
+        editrules = new jqGrid.colObject.editRules() { edithidden = true },
+        edittype = "custom",
+        editoptions = new jqGrid.colObject.editOptions()
+        {
+            custom_element = new funcMethodModule() { MakeStyle = funcMethodModule.funcMakeStyle.funcConext, funcString = "return '<span>' + value + '</span>'" },
+            custom_value = new funcMethodModule() { MakeStyle = funcMethodModule.funcMakeStyle.funcConext, funcString = "return $(elem).val();" }
+        }
+    }
+},
+new MakeColumnModule()
+{
+    CN = Html.GLang(Tabd.unit_price),
+    CM =
+    {
+        name = Tabd.unit_price.M,
+        width = "90px",
+        editable = false,
+        editrules = new jqGrid.colObject.editRules() { required = true, number = true, edithidden=false },
+        editoptions = new jqGrid.colObject.editOptions()
+        {
+            dataEvents = new jqGrid.colObject.editOptions.DataEvents[] { dataEvent_blur }
+        },
+        formatterstring = "currency",
+        formatoptions = new jqGrid.colObject.FormatOptions() { decimalSeparator = ".", thousandsSeparator = ",", decimalPlaces = 2 }
+    }
+},
+new MakeColumnModule()
+{
+    CN = Html.GLang(Tabd.currency),
+    CM =
+    {
+        name = Tabd.currency.M,
+        width = "90px",
+        editable = false,
+        hidden = false,
+        hidedlg = true,
+        editrules = new jqGrid.colObject.editRules() { edithidden = true }
+    }
+},
+new MakeColumnModule()
+{
+    CN = Html.GLang(Tabd.unit_name),
+    CM =
+    {
+        name = Tabd.unit_name.M,
+        width = "90px",
+        editable = false,
+        hidden = false,
+        hidedlg = false,
+        align="center"
+    }
+},
+new MakeColumnModule()
+{
+    CN = Html.GLang(Tabd.amt),
+    CM =
+    {
+        name = Tabd.amt.M,
+        width = "90px",
+        editable = true,
+        editrules = new jqGrid.colObject.editRules() { required = true, number = true },
+        editoptions = new jqGrid.colObject.editOptions()
+        {
+            dataEvents = new jqGrid.colObject.editOptions.DataEvents[] { dataEvent_blur }
+        },
+        formatterstring = "currency",
+        formatoptions = new jqGrid.colObject.FormatOptions() { decimalSeparator = ".", thousandsSeparator = ",", decimalPlaces = 2 }
+    }
+},
+new MakeColumnModule()
+{
+    CN = Html.GLang(Tabd.subtotal.M),
+    CM =
+    {
+        name = Tabd.subtotal.M,
+        width = "90px",
+        editable = false,
+        hidden = false,
+        hidedlg = false,
+        editoptions = new jqGrid.colObject.editOptions()
+        {
+            _readonly = "readonly"
+        },
+        formatterstring = "currency",
+        formatoptions = new jqGrid.colObject.FormatOptions() { decimalSeparator = ".", thousandsSeparator = ",", decimalPlaces = 2, prefix = "" }
+    }
+}
+);
+
+    gridObj.GridModule.postData = new DataModule();
+    gridObj.GridModule.postData.Add("s_order_serial", "$('#order_serial').val()");
+    gridObj.GridModule.postData.Add("s_orders_id", "$('#id').val()");
+
+    gridObj.NavGridModule.Add.afterShowForm = new funcMethodModule() { MakeStyle = funcMethodModule.funcMakeStyle.funcConext };
+    gridObj.NavGridModule.Add.afterShowForm.funcString = "$.ajax_MasterFormShowAfterHandle();";
+
+    gridObj.NavGridModule.Add.afterSubmit = new funcMethodModule() { MakeStyle = funcMethodModule.funcMakeStyle.funcConext };
+    gridObj.NavGridModule.Add.afterSubmit.funcString = "$.ajax_RefreshTotal();return [true,''];";
+
+    gridObj.NavGridModule.Edit.afterSubmit = new funcMethodModule() { MakeStyle = funcMethodModule.funcMakeStyle.funcConext };
+    gridObj.NavGridModule.Edit.afterSubmit.funcString = "$.ajax_RefreshTotal();return [true,''];";
+
+    gridObj.NavGridModule.Del.afterSubmit = new funcMethodModule() { MakeStyle = funcMethodModule.funcMakeStyle.funcConext };
+    gridObj.NavGridModule.Del.afterSubmit.funcString = "$.ajax_RefreshTotal();return [true,''];";
+
+    gridObj.NavGridModule.navOption.add = false;
+    gridObj.NavGridModule.navOption.edit = true;
+    gridObj.NavGridModule.navOption.refresh = false;
+
+    gridObj.ToScriptHandle();
+}
+@using (Ajax.BeginForm(null, null, new AjaxOptions() { Url = Url.Action(CommWebSetup.acNameMasterDataUpdateData), HttpMethod = "post", OnSuccess = func.funcName }, new { id = CommWebSetup.eleNameMasterDataForm, ng_controller = "ctr_frm" }))
+{
+    @Html.HiddenFor(x => x.id, new { @id = "id" })
+
+    @Html.HiddenFor(x => x.EditType)
+    <input type="hidden" id="returnQueryString" name="returnQueryString" value="@Html.Raw(ViewBag.QueryString)" />
+    <div class="@ViewBag.css_Edit_Master_CaptionCss">
+        @ViewBag.Caption
+    </div>
+    <div class="@ViewBag.css_EditFormNoteCss">
+        @Resources.Res.Info_StarMustEdit
+    </div>
+    <fieldset>
+        <legend class="@ViewBag.css_Edit_Subtitle_CaptionCss">@Html.Lang("CaptionMaster")</legend>
+        <table>
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.order_serial)
+                </th>
+                <td>@Html.LabelHiddenField(x => x.order_serial)</td>
+
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.transation_date)
+                </th>
+                <td>@Html.SpanText(x => x.transation_date)</td>
+
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.order_state)
+                </th>
+                <td>@Html.DropDownListFor(x => x.order_state, (List<SelectListItem>)ViewBag.options_order_state, new { required = true })</td>
+            </tr>
+
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.order_money)
+                </th>
+                <td>@Html.SpanText(x => x.order_money)</td>
+
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.shipping_fee)
+                </th>
+                <td>@Html.TextBoxFor(x => x.shipping_fee, "{0:0.0}", new { size = "10", type = "number" })</td>
+
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.total_money)
+                </th>
+                <td>@Html.SpanText(x => x.total_money)</td>
+            </tr>
+
+            <tr ng-hide="true">
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.pay_style)
+                </th>
+                <td>@Html.DropDownListFor(x => x.pay_style, (List<SelectListItem>)ViewBag.options_pay_style)</td>
+
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.pay_state)
+                </th>
+                <td>@Html.DropDownListFor(x => x.pay_state, (List<SelectListItem>)ViewBag.options_pay_state)</td>
+            </tr>
+
+            <tr ng-hide="true">
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.pay_date)
+                </th>
+                <td>@Html.LabelDateField(x => x.pay_date)</td>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.pay_money)
+                </th>
+                <td>@Html.LabelHiddenField(x => x.pay_money)</td>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset ng-hide="true">
+        <legend class="@ViewBag.css_Edit_Subtitle_CaptionCss">@Html.Lang("CaptionOrder")</legend>
+        <table>
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.order_name)
+                </th>
+                <td>
+                    @Html.TextBoxFor(x => x.order_name, new { @readonly = true })
+                    @Html.RadioButtonFor(x => x.order_gender, false)<span>女</span>
+                    @Html.RadioButtonFor(x => x.order_gender, true)<span>男</span>
+                </td>
+
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.order_tel)
+                </th>
+                <td>@Html.TextBoxFor(x => x.order_tel, new { @readonly = true, maxlength = 16 })</td>
+            </tr>
+
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.order_email)
+                </th>
+                <td colspan="3">@Html.TextBoxFor(x => x.order_email, new { maxlength = 64, size = 64, type = "email" })</td>
+            </tr>
+
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.order_zip)
+                </th>
+                <td colspan="3">
+                    @Html.TextBoxFor(x => x.order_zip, new { size = 5, maxlength = 5 })
+                    @Html.TextBoxFor(x => x.order_address, new { size = 64, maxlength = 64 })
+                </td>
+            </tr>
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.order_memo)
+                </th>
+                <td colspan="3">@Html.TextAreaFor(x => x.order_memo, new { style = "width:100%;heigh:220px" })</td>
+            </tr>
+
+        </table>
+    </fieldset>
+    <fieldset>
+        <legend class="@ViewBag.css_Edit_Subtitle_CaptionCss">@Html.Lang("CaptionReceiver")</legend>
+        <table>
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.receive_name)
+                </th>
+                <td>
+                    @Html.TextBoxFor(x => x.receive_name, new { @readonly = true })
+                    @Html.RadioButtonFor(x => x.receive_gender, false)<span>女</span>
+                    @Html.RadioButtonFor(x => x.receive_gender, true)<span>男</span>
+                </td>
+
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.receive_tel)
+                </th>
+                <td>@Html.TextBoxFor(x => x.receive_tel, new { @readonly = "readonly", maxlength = 16 })</td>
+            </tr>
+
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.receive_email)
+                </th>
+                <td colspan="3">@Html.TextBoxFor(x => x.receive_email, new { maxlength = 64, size = 64, type = "email" })</td>
+            </tr>
+
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.receive_zip)
+                </th>
+                <td colspan="3">
+                    @Html.TextBoxFor(x => x.receive_zip, new { size = 5, maxlength = 5 })
+                    @Html.TextBoxFor(x => x.receive_address, new { size = 64, maxlength = 64 })
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset ng-hide="true">
+        <legend class="@ViewBag.css_Edit_Subtitle_CaptionCss">@Html.Lang("CaptionReturn")</legend>
+        <table>
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">
+                    @Html.FieldLang(x => x.reject_date)
+                </th>
+                <td>@Html.EditorFor(x => x.reject_date, "edit_Date.cshtml")</td>
+            </tr>
+        </table>
+    </fieldset>
+    <div class="@ViewBag.css_EditFormNavigationFunctionCss">
+        <button type="submit" id="btn_submit">
+            @(Model.EditType == EditModeType.Insert ? Resources.Res.Button_Sure_Insert : Resources.Res.Button_Sure_Modify)
+        </button>
+        <button type="button" id="btn_return_list">@Resources.Res.Button_Return</button>
+    </div>
+}
+<fieldset>
+    <legend class="@ViewBag.css_Edit_Subtitle_CaptionCss">@Html.Lang("CaptionDetail")</legend>
+    @Html.Raw(gridObj.jqGridHtml)
+</fieldset>
+<script type="text/javascript">
+    $(document).ready(function () {
+        @Html.Raw(gridObj.jqGridScript)
+    });
+    (function ($) {
+        $.ajax_MasterFormShowAfterHandle = function () {
+            $.post("GetNewId").done(function (data, textStatus, jqXHR) {
+                var jsonobj = jQuery.parseJSON(data);
+                $('#ids').val(jsonobj);
+            });
+        }
+
+        $.ajax_RefreshTotal = function () {
+            
+            $.post("ajax_RefreshTotal", { id: $("#id").val() }).done(function (data, textStatus, jqXHR) {
+                var jsonobj = jQuery.parseJSON(data);
+                $('#order_money').text(jsonobj.order_money);
+                $('#total_money').text(jsonobj.total_money);
+            });
+        }
+    })(jQuery);
+</script>

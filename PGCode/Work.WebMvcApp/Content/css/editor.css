@@ -1,0 +1,15 @@
+﻿@import "base/reset.css";
+@import "base/basic.css";
+
+@charset "utf-8";
+
+body {
+	background:#fff;
+	text-align:left;
+	padding:0 10px;
+	}
+
+img
+{
+    max-width: 100%;
+}

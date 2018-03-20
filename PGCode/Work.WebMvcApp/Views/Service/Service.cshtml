@@ -1,0 +1,24 @@
+﻿@model DotWeb.WebInfo
+@{
+	Layout = "~/Views/Shared/Layout.cshtml";
+}
+@section head {
+	<link rel="stylesheet" href="~/Content/css/page.css">
+}
+@Html.Partial("sidebar", Model.product_category)
+<div id="content">
+
+	<h3>服務項目<em>Services</em></h3>
+	
+	<h4>建築工程 :</h4>
+	<p>商業大樓、停車場、學校、科技廠房、住宅。</p>
+
+	<h4>土木工程 :</h4>
+	<p>道路、橋樑等相關工程。</p>
+	<p>統包規劃、設計及營建管理。</p>
+	<p>建築諮詢、整合、規劃、合建、委建。</p>
+	
+	<h4>工程統包 :</h4>
+	<p>係指將設計工作一併委由營造廠辦理，由營造廠負設計與施工上之一切責任，因為在工程初期即獲得設計與施工作業整合，除可大幅減少變更設計、材料綁標等問題外，並有助於業主對於工程預算與工期之掌控，以提昇效益，這種結合設計與施工於同一契約辦理的模式稱為統包(TurnKey）。</p>
+	
+</div><!-- content //-->

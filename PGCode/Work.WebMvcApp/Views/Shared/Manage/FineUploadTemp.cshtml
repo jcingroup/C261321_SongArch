@@ -1,0 +1,59 @@
+﻿@model DotWeb.fineuploadModal
+
+<div id="@Model.prefix" title="@Model.title">
+    <div id="fine_uploader_@Model.prefix"></div>
+    <fieldset>
+        <legend class="ui-state-active edit-subtitle-caption" style="width:100%;font-size: 0.95em;padding:5px 5px 5px 5px;font-weight:normal">
+            圖片列表(IE10、Chrome、Mozilla Firefox及Opera可選多張圖片上傳)
+        </legend>
+        <div id="@(Model.prefix)_filesList">        
+        </div>
+    </fieldset>
+</div>
+<script>
+
+    $(document).ready(function () {
+
+        $('#@(Model.prefix)').dialog({
+            autoOpen: false,
+            height: 480,
+            width: 640,
+            zIndex: 2,
+            open: function (event, ui) {
+                $.FilesListHandle('@(Model.prefix)_filesList', 'ajax_ListFiles', 'ajax_DeleteFiles', '@Model.id', '@Model.filekind');
+            }
+        });
+
+        $('#@(Model.open_button)').click(function () {
+            $('#@(Model.prefix)').dialog('open');
+        });
+
+        $('#fine_uploader_@(Model.prefix)').fineUploader({
+            element: $('#fine_uploader_@(Model.prefix)'),
+            request: {
+                endpoint: "ajax_UploadFine",
+                params: { 'id': '@(Model.id)', 'FilesKind': '@(Model.filekind)' },
+                inputName: "hd_FileUp_EL"
+            },
+            validation: { allowedExtensions: ['jpg', 'jpeg', 'gif', 'png'] },
+            text: { uploadButton: "<i class='icon-plus icon-white'></i>選擇上傳圖片" },
+            failedUploadTextDisplay: {
+                mode: "custom",
+                maxChars: 100,
+                responseProperty: "error",
+                enableTooltip: true
+            },
+            debug: true,
+            autoUpload: true
+        }).on('complete', function (id, fileName, responseJSON) {
+            $.FilesListHandle('@(Model.prefix)_filesList', 'ajax_ListFiles', 'ajax_DeleteFiles', '@Model.id', '@Model.filekind');
+            if ($(this).fineUploader('getInProgress') == 0) {
+                $(this).fineUploader('clearStoredFiles');
+            }
+        })
+        .on('error', function (event, id, fileName, errorReason) {
+            alert('file uploader error:' + errorReason);
+        });
+    });
+
+</script>

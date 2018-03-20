@@ -1,0 +1,121 @@
+﻿@model ProcCore.Business.Logic.m_Orders
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="UTF-8" />
+ <title>Single Malt B2B【订单信息】</title>
+</head>
+<body style="line-height: 1.5em;color: #333333;font-family: Verdana, Arial, Helvetica, sans-serif;font-size:12px;letter-spacing :0.8pt;background-color:#ffffff;margin:0;padding:20px;text-align:center">
+
+<!--// container -->
+<table width="720" border="0" cellpadding="0" cellspacing="0" style="margin:0 auto;*margin:0;" >
+
+	<!--// header -->
+	<tr><td style="font-weight:bold;font-size:1.7em;color:#784B21; text-align:left; padding:10px 0; border-bottom:2px solid #F9F5EC;">
+		【Single Malt B2B】- 商品订购单
+	</td></tr><!-- header //-->
+	
+	<!-- order title -->
+	<tr><td background="" align="left" style="padding:30px 0 8px 0;color:#C98C6D">
+		订单编号：<span style="font-weight:bold;">@Model.order_serial</span> |
+		订单日期：<span style="font-weight:bold;">@Model.transation_date.ToString("yyyy/MM/dd")</span>
+	</td></tr><!-- order title //-->
+
+	<!-- order list -->
+	<tr><td style="border:1px solid #cccccc;border-bottom:none;">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<th width="320px" height="25px" align="left" bgcolor="#C69C6B" style="padding-left:10px;color:#ffffff">产品名称</th>
+				<th style="border-left:1px solid #ffffff;color:#ffffff" align="center" bgcolor="#C69C6B">单价</th>
+				<th style="border-left:1px solid #ffffff;color:#ffffff" align="center" bgcolor="#C69C6B">数量</th>
+				<th style="border-left:1px solid #ffffff;color:#ffffff" align="center" bgcolor="#C69C6B">小计</th>
+			</tr>
+			<!--Tag.Start-->
+			<!--list-->
+				@foreach(var Item in Model.order_detail){
+			<tr>
+				<td align="left" style="padding:7px 0 7px 10px; border-bottom:1px solid #cccccc;">
+                <strong style="font-weight:bold;">@Item.product_name</strong><br>
+                产品编号: @Item.product_serial<br>
+                单位: @Item.unit_name<br>
+                </td>
+				<td align="center" style="padding:7px 0; border-bottom:1px solid #cccccc;">@Resources.ResWeb.CurrencySign @Item.unit_price.ToString("0.00")</td>
+				<td align="center" style="padding:7px 0; border-bottom:1px solid #cccccc;">@Item.amt</td>
+				<td align="center" style="padding:7px 0; border-bottom:1px solid #cccccc;">@Resources.ResWeb.CurrencySign @Item.subtotal.ToString("0.00")</td>
+			</tr>
+				}
+			<!--Tag.End-->
+		</table>
+	</td></tr><!-- order_list //-->
+
+	<!-- total -->
+	<tr><td bgcolor="#fafafa" style="border-bottom:1px dotted #ccc">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" style="padding-bottom:15px;"><tr>
+
+			<!-- ATM转账信息 -->
+			<td style="line-height:140%;padding:5px 15px" valign="top">
+				<h4 style="font-weight:bold">订单信息:</h4>
+				1. 全站免运费<br>2. 付款讯息将另行通知
+			</td><!-- ATM转账信息 //-->
+			
+			<!-- count -->
+			<td style="border:1px solid #cccccc;border-top:none;padding:10px;width:300px;" bgcolor="#FFFFFF">
+				<table width="100%" border="0" cellpadding="0" cellspacing="0">
+					<tr>
+						<td style="padding:3px 7px;font-weight:bold">小计：</td>
+						<td style="padding:3px 7px;" align="right">@Resources.ResWeb.CurrencySign @Model.order_money 元</td>
+					</tr>
+					<tr>
+						<td style="padding:3px 7px;font-weight:bold">运费：</td>
+						<td style="padding:3px 7px;" align="right">@Resources.ResWeb.CurrencySign @Model.shipping_fee 元</td>
+					</tr>
+					<tr>
+						<td style="padding:5px 7px;font-weight:bold;background:#FFE6E2; color:#e95513">总金额：</td>
+						<td style="padding:3px 7px;background:#FFE6E2; color:#e95513" align="right">@Resources.ResWeb.CurrencySign @Model.total_money 元</td>
+					</tr>
+				</table>
+			</td><!-- count //-->
+
+		</tr></table>
+	</td></tr><!-- total //-->
+
+	<!--footer -->
+	<tr><td>
+
+		<!--Recipient start-->
+		<table width="100%" border="0" cellpadding="0" cellspacing="0">
+			<caption style="padding:30px 0 10px 0;text-align:left" valign="middle">
+				<span style="color:#C6A885;font-size:1.5em;font-weight:bold;margin:5px">收件人资料</span>
+				<span style="font-size:13px;color:#E7DECE">Recipient information</span>
+			</caption>
+			<tr>
+				<th width="75" align="left" style="padding:3px 5px 3px 35px;color:#666666">姓　　名</th>
+				<td align="left" style="padding:3px 7px;border-left:1px solid #eaeaea;">@Model.receive_name</td>
+			</tr>
+			<tr>
+				<th align="left" style="padding:3px 5px 3px 35px;color:#666666">电　　话</th>
+				<td align="left" style="padding:3px 7px;border-left:1px solid #eaeaea;">@Model.receive_tel</td>
+			</tr>
+			<tr>
+				<th align="left" style="padding:3px 5px 3px 35px;color:#666666">地　　址</th>
+				<td align="left" style="padding:3px 7px;border-left:1px solid #eaeaea;">@Model.receive_zip - @Model.receive_address</td>
+			</tr>
+		</table><!-- Recipient //-->
+
+		<br /><br />
+
+		<!-- copyright -->
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" style="border-top:1px dotted #cccccc;padding:10px;color:#81746C;font-size:11px" bgcolor="#F9F5EC">
+			<tr><td align="right">
+				<span style="font:normal bold 15px/20px Arial; color:#D55B08;">@Resources.ResWeb.CompanyName</span><br />
+				Single Malt B2B &copy; 2013<br />
+				咨询专线：886-3-3019277
+			</td></tr>
+		</table><!-- copyright //-->
+
+	</td></tr><!-- footer //-->
+
+</table><!-- container //-->
+
+</body>
+</html>

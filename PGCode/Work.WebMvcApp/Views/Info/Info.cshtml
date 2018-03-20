@@ -1,0 +1,25 @@
+﻿@model DotWeb.WebInfo
+@{
+	Layout = "~/Views/Shared/Layout.cshtml";
+}
+@section head {
+	<link rel="stylesheet" href="~/Content/css/page.css">
+}
+@Html.Partial("sidebar", Model.product_category)
+
+<div id="content">
+
+	<h3>客戶實蹟<em>Customer solid track</em></h3>
+
+	<h4>本公司累積20多年的工程經驗，用專業知識，堅持態度與服務，成就嚴謹的工程：</h4>
+	<ul class="list">
+		<li>1. 八德市介壽路巧克力工廠土木工程</li>
+		<li>2. 龍潭成功路上廠房工程</li>
+		<li>3. 六六快速公路廠房工程</li>
+		<li>4. 平鎮工業區廠房工程</li>
+		<li>5. 中壢工業區廠房工程</li>
+		<li>6. 新北市八里區廠房工程</li>
+		<li>7. 楊梅、龍潭民宅</li>
+	</ul>
+
+</div><!-- content //-->

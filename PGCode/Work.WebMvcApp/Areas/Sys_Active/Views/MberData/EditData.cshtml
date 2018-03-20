@@ -1,0 +1,153 @@
+﻿@model ProcCore.Business.Logic.m_Member
+@using ProcCore.JqueryHelp;
+@using ProcCore.JqueryHelp.FormvValidate;
+@using ProcCore.JqueryHelp.CustomButton;
+@using ProcCore.Business.Base;
+@section IncludeScript{
+    @Html.Partial("Manage/includeScript_Comm")
+    @Html.Partial("Manage/includeScript_FineUpload")
+}
+@section menu{
+    @Html.Raw(Session["MenuHtmlString"].ToString())
+}
+
+@{
+    FormValidateSetup val_frm_a = new FormValidateSetup(new jqSelector() { IdName = CommWebSetup.eleNameMasterDataForm });
+    val_frm_a.Add(Html.FieldsRuleSetup(x => x.member_name, new FieldRule() { required = true }, null, null));
+    val_frm_a.Add(Html.FieldsRuleSetup(x => x.email, new FieldRule() { required = true }, null, null));
+
+    jqSelector jq_for_btn_rtn = new jqSelector() { IdName = "btn_return_list" };
+    jqSelector jq_for_btn_sbm = new jqSelector() { IdName = "btn_submit" };
+
+    jqSelector jq_for_btn_opimgList_fmwk = new jqSelector() { IdName = "btn_opdlg_imgs_list" };
+    jqSelector jq_for_btn_opimgProd_fmwk = new jqSelector() { IdName = "btn_opdlg_imgs_prod" };
+
+    funcMethodModule func = Html.CommSetFormOnSuccesss();
+}
+
+@using (Ajax.BeginForm(null, null, new AjaxOptions() { Url = Url.Action(CommWebSetup.acNameMasterDataUpdateData), HttpMethod = "post", OnSuccess = func.funcName }, new { id = CommWebSetup.eleNameMasterDataForm }))
+{
+    @Html.HiddenFor(x => x.id, new { @id = "id" })
+    @Html.HiddenFor(x => x.EditType)
+    <input type="hidden" id="returnQueryString" name="returnQueryString" value="@Html.Raw(ViewBag.QueryString)" />
+    <div class="@ViewBag.css_Edit_Master_CaptionCss">
+        @ViewBag.Caption
+    </div>
+    <div class="@ViewBag.css_EditFormNoteCss">
+        @Resources.Res.Info_StarMustEdit
+    </div>
+    <fieldset>
+        <legend class="@ViewBag.css_Edit_Subtitle_CaptionCss">@Html.Lang("BaseData")</legend>
+        <table>
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.email)</th>
+                <td>
+                    @if (Model.EditType == EditModeType.Insert)
+                    {
+                        @Html.TextBoxFor(x => x.email, new { @maxlength = 128, @size = 64 })
+                    }
+                    else
+                    {
+                        @Html.SpanText(x => x.email)
+                    }
+                </td>
+            </tr>
+            @if (Model.EditType == EditModeType.Insert)
+            {
+                <tr>
+                    <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.password)</th>
+                    <td>@Html.PasswordFor(x => x.password, new { @maxlength = 16, @size = 16 })</td>
+                </tr>
+            }
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.member_name)</th>
+                <td>@Html.TextBoxFor(x => x.member_name, new { @maxlength = 24, @size = 24 })</td>
+            </tr>
+
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.gender)</th>
+                <td>@Html.RadioButtonFor(x => x.gender, true) 男 @Html.RadioButtonFor(x => x.gender, false) 女</td>
+            </tr>
+
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.tel)</th>
+                <td>@Html.TextBoxFor(x => x.tel, new { @maxlength = 32, @size = 32 })</td>
+            </tr>
+
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.mobile)</th>
+                <td>@Html.TextBoxFor(x => x.mobile, new { @maxlength = 32, @size = 32 })</td>
+            </tr>
+
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.zip)</th>
+                <td>
+                    @Html.TextBoxFor(x => x.zip, new { @maxlength = 15, @size = 5 })
+                    @Html.TextBoxFor(x => x.address, new { @maxlength = 128, @size = 64 })
+                </td>
+            </tr>
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.birthday)</th>
+                <td>@Html.EditorFor(x => x.birthday, "edit_Birthday")</td>
+            </tr>
+
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.state)</th>
+                <td>
+                    @Html.DropDownListFor(x => x.state, (List<SelectListItem>)ViewBag.options_state)
+                </td>
+            </tr>
+
+        </table>
+    </fieldset>
+
+    <div class="@ViewBag.css_EditFormNavigationFunctionCss">
+        <button type="submit" id="@jq_for_btn_sbm.IdName">
+            @(Model.EditType == EditModeType.Insert ? Resources.Res.Button_Sure_Insert : Resources.Res.Button_Sure_Modify)
+        </button>
+        <button type="button" id="@jq_for_btn_rtn.IdName">@Resources.Res.Button_Return</button>
+    </div>
+}
+@Html.Partial("Manage/includeFiledownload_iFrame")
+@Html.ImageFineUpLoad("hd_ImageUpA", Resources.Res.Info_Title_ImageUpload, jq_for_btn_opimgList_fmwk.IdName, "ajax_UploadFine", "ajax_ListFiles", "ajax_DeleteFiles", Model.id, "ListImg", 480, 640)
+@Html.ImageFineUpLoad("hd_ImageUpB", Resources.Res.Info_Title_ImageUpload, jq_for_btn_opimgProd_fmwk.IdName, "ajax_UploadFine", "ajax_ListFiles", "ajax_DeleteFiles", Model.id, "ShowImg", 480, 640)
+@{
+    //===
+    jqButton btn_sbm_fmwk = new jqButton(new jqSelector() { IdName = jq_for_btn_sbm.IdName });
+    btn_sbm_fmwk.options.icons.primary = FrameworkIcons.ui_icon_check;
+
+    //===
+    jqButton btn_rtn_fmwk = new jqButton(jq_for_btn_rtn);
+    btn_rtn_fmwk.options.icons.primary = FrameworkIcons.ui_icon_arrowreturnthick_1_w;
+
+    jqElementEvent btn_rtn_evt_clk = new jqElementEvent(jq_for_btn_rtn);
+    btn_rtn_evt_clk.events.Add(new jqElementEvent.jqEvents() { htmlElementEvent = HtmlObjectEvent.click, funcString = "document.location.href='" + Url.Action(CommWebSetup.acNameEditFormReturnGridList) + "?' + $('#returnQueryString').val();" });
+    //===
+    //===
+    jqButton btn_opimgList_fmwk = new jqButton(new jqSelector() { IdName = jq_for_btn_opimgList_fmwk.IdName });
+    btn_opimgList_fmwk.options.icons.primary = FrameworkIcons.ui_icon_arrow_4_diag;
+
+    jqButton btn_opimgProd_fmwk = new jqButton(new jqSelector() { IdName = jq_for_btn_opimgProd_fmwk.IdName });
+    btn_opimgProd_fmwk.options.icons.primary = FrameworkIcons.ui_icon_arrow_4_diag;
+
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#address').addr_query_tw();
+        $("@Html.jqId(x=>x.birthday)").datepicker({ "showOtherMonths": true });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        @Html.Raw(val_frm_a.ToScriptString())
+        @Html.Raw(btn_opimgList_fmwk.ToScriptString())
+        @Html.Raw(btn_opimgProd_fmwk.ToScriptString())
+        @Html.Raw(btn_sbm_fmwk.ToScriptString())
+        @Html.Raw(btn_rtn_fmwk.ToScriptString())
+        @Html.Raw(btn_rtn_evt_clk.ToScriptString())
+        @Html.Raw(func.ToScriptString())
+    });
+    (function ($) {
+    })(jQuery);
+</script>

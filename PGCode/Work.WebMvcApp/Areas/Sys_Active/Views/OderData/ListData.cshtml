@@ -1,0 +1,95 @@
+﻿@model ProcCore.Business.Logic.q_Orders
+@using ProcCore.Business.Logic
+@using ProcCore.Business.Logic.TablesDescription
+@using ProcCore.JqueryHelp
+@using ProcCore.JqueryHelp.JQGridScript
+
+@{
+    Orders Tab = new Orders();
+}
+@section IncludeScript{
+    @Html.Partial("Manage/includeScript_Comm")
+    @Html.Partial("Manage/includeScript_Grid")
+}
+@section menu{
+    @Html.Raw(Session["MenuHtmlString"].ToString())
+}
+@using (Html.BeginForm(CommWebSetup.acNameMasterDataGridUrl, null, FormMethod.Get, new { ID = CommWebSetup.eleNameSearchForm }))
+{
+    <fieldset>
+        <legend class="@ViewBag.css_Edit_Subtitle_CaptionCss">@Resources.Res.Search</legend>
+        @Html.HiddenFor(x => x.page)
+        @Html.LabelFor(x => x.s_order_serial, Html.Lang(x => x.s_order_serial))：
+        @Html.TextBoxFor(x => x.s_order_serial)
+
+        @Html.LabelFor(x => x.s_order_state, Html.Lang(x => x.s_order_state))：
+        @Html.RadioButtonFor(x => x.s_order_state, "") <span>全部</span>
+        @Html.RadioButtonFor(x => x.s_order_state, CodeSheet.OrderState.New.Code) <span>@CodeSheet.OrderState.New.Value</span>
+        @Html.RadioButtonFor(x => x.s_order_state, CodeSheet.OrderState.Handle.Code) <span>@CodeSheet.OrderState.Handle.Value</span>
+        @Html.RadioButtonFor(x => x.s_order_state, CodeSheet.OrderState.Close.Code) <span>@CodeSheet.OrderState.Close.Value</span>
+        @Html.RadioButtonFor(x => x.s_order_state, CodeSheet.OrderState.Cancel.Code) <span>@CodeSheet.OrderState.Cancel.Value</span>
+        <button type="button" id="btn_Search">@Resources.Res.Search</button>
+    </fieldset>
+}
+
+@{
+    jqGrid gridobj = Html.jqGrid_Standard(
+   CommWebSetup.MasterGridID,
+   (String)ViewBag.Caption,
+   ViewData["Page"].ToString(),
+   ViewData["AppendQuertString"].ToString(),
+   Url.Action(CommWebSetup.acNameMasterDataGridUrl),
+   Url.Action(CommWebSetup.acNameMasterDataDelete),
+   Url.Action(CommWebSetup.acNameEditMasterDataAddNew),
+   CommWebSetup.MasterGridDefHight, null,
+   new MakeColumnModule() { CN = Resources.Res.ColModify, CM = { name = Tab.id.M, key = true, width = "36px", formatter = new funcMethodModule() { MakeStyle = funcMethodModule.funcMakeStyle.onlyName, funcName = "$.fmt_LinkId" } } },
+   new MakeColumnModule() { CN = Html.FLang(Tab.order_serial), CM = { name = Tab.order_serial.M, width = "120px" } },
+   new MakeColumnModule() { CN = Html.FLang(Tab.receive_name), CM = { name = Tab.receive_name.M, width = "120px" } },
+   new MakeColumnModule() { CN = Html.FLang(Tab.transation_date), CM = { name = Tab.transation_date.M, width = "120px" } },
+       new MakeColumnModule() { CN = Html.FLang(Tab.receive_tel), CM = { name = Tab.receive_tel.M, width = "180px" } },
+   new MakeColumnModule() { CN = Html.FLang(Tab.order_state), CM = { name = Tab.order_state.M, width = "120px" } }
+   );
+    gridobj.NavGridModule.navOption.del = false;
+    gridobj.navCustomButtons = new jqGrid.navButtonAddModule[] { };
+    gridobj.GridModule.postData = new DataModule();
+    gridobj.GridModule.postData.Add("s_order_state", "'" + CodeSheet.OrderState.New.Code + "'");
+    gridobj.GridModule.loadComplete = new funcMethodModule() { MakeStyle= funcMethodModule.funcMakeStyle.funcConext };
+    gridobj.GridModule.loadComplete.funcString = "$('.LinkId').button({ icons: { primary: 'ui-icon-pencil' } ,text:false})";
+    gridobj.ToScriptHandle();
+    
+}
+@Html.Raw(gridobj.jqGridHtml)
+@Html.OpenDialogPlugin(ViewData["DialogTitle"].ToString(), ViewData["DialogMessage"].ToString())
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#btn_Search')
+            .button({ icons: { primary: 'ui-icon-search' } })
+            .click(function () {
+                $('#jqMasterGird').setGridParam(
+                    {
+                        postData: {
+                            s_order_serial: $('#s_order_serial').val(),
+                            s_order_state: $('input[name=s_order_state]:checked').val()
+                        }
+                    });
+                $('#jqMasterGird').trigger('reloadGrid');
+            });
+
+        $(document).on('click', '.LinkId', function () {
+            document.location.href = gb_approot + 'Sys_Active/OderData/EditMasterDataByID?Id=' + $(this).attr('rowid');
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        @Html.Raw(gridobj.jqGridScript)
+    });
+    (function ($) {
+        $.fmt_LinkId = function (cellValue, options, rowObject) {
+            var getQuery = $.CollectQuery();
+            //var cellHtml = '<a href="/Sys_Active/OderData/EditMasterDataByID?Id=' + jQuery.trim(options.rowId) + '&' + $.pageQuery('jqMasterGird') + '&' + getQuery + '"><div class="ui-state-default ui-corner-all" style="height:24px;width:24px;margin:1px"><span class="ui-icon ui-icon-pencil" style="margin:3px"></span></div></a>';
+            var cellHtml = '<button type="button" class="LinkId" rowid="' + jQuery.trim(options.rowId) + '">修改</button>';
+            return cellHtml;
+        };
+    })(jQuery);
+</script>

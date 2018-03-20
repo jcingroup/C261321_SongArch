@@ -1,0 +1,27 @@
+﻿@model DotWeb.WebInfo
+@{
+	Layout = "~/Views/Shared/Layout.cshtml";
+}
+@section head {
+	<link rel="stylesheet" href="~/Content/css/page.css">
+}
+@Html.Partial("sidebar", Model.product_category)
+<div id="content">
+
+	<h3>聯絡我們<em>Contact Us</em></h3>
+
+	<div class="map">
+		<iframe width="736" height="360" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com.tw/maps?f=q&amp;source=s_q&amp;hl=zh-TW&amp;geocode=&amp;q=%E6%A1%83%E5%9C%92%E7%B8%A3%E5%B9%B3%E9%8E%AE%E5%B8%82%E6%B9%A7%E5%85%89%E8%B7%AF65%E8%99%9F&amp;aq=&amp;sll=25.052635,121.365452&amp;sspn=0.135917,0.154324&amp;brcurrent=3,0x346822e21b626159:0x95a21e1ecba6804c,0,0x34683d0eceda863f:0x54e44f52583a486a&amp;ie=UTF8&amp;hq=&amp;hnear=324%E6%A1%83%E5%9C%92%E7%B8%A3%E5%B9%B3%E9%8E%AE%E5%B8%82%E6%B9%A7%E5%85%89%E8%B7%AF65%E8%99%9F&amp;t=m&amp;z=14&amp;ll=24.897648,121.21016&amp;output=embed"></iframe><br />
+		<small><a href="https://maps.google.com.tw/maps?f=q&amp;source=embed&amp;hl=zh-TW&amp;geocode=&amp;q=%E6%A1%83%E5%9C%92%E7%B8%A3%E5%B9%B3%E9%8E%AE%E5%B8%82%E6%B9%A7%E5%85%89%E8%B7%AF65%E8%99%9F&amp;aq=&amp;sll=25.052635,121.365452&amp;sspn=0.135917,0.154324&amp;brcurrent=3,0x346822e21b626159:0x95a21e1ecba6804c,0,0x34683d0eceda863f:0x54e44f52583a486a&amp;ie=UTF8&amp;hq=&amp;hnear=324%E6%A1%83%E5%9C%92%E7%B8%A3%E5%B9%B3%E9%8E%AE%E5%B8%82%E6%B9%A7%E5%85%89%E8%B7%AF65%E8%99%9F&amp;t=m&amp;z=14&amp;ll=24.897648,121.21016" style="color:#0000FF;text-align:left">顯示詳細地圖</a></small>
+	</div>
+
+	<ul class="list">
+        <li>手機/ 0926-162-007　0937-841-151　0910-957-741</li>
+        <li>地址/ 桃園縣平鎮市湧光路65號</li>
+        <li>電話/ 03-469-2551　傳真/ 03-469-7741</li>
+        <li>Email/ <a href="mailto:yuming7887@gmail.com">yuming7887@gmail.com</a></li>
+	</ul>
+
+    <h5>如有任何的疑問或需要我們服務，歡迎您來電或MAIL，我們並會儘快與您回覆，謝謝您～</h5>
+
+</div><!-- content //-->

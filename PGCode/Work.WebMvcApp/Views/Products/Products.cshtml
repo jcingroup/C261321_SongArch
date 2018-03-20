@@ -1,0 +1,52 @@
+﻿@model DotWeb.WebInfo
+@{
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+@section head {
+    <link rel="stylesheet" href="~/Content/css/page.css">
+}
+@Html.Partial("sidebar", Model.product_category)
+<div id="content">
+
+    <h3>工程實蹟<em>PERFORMANCE</em></h3>
+
+    <h4><em>【@Model.product_category.Product_Category_Fix_Select.Category_Name】</em> @Model.product.product_name</h4>
+
+    <!--<ol class="path">
+        <li><img src="@Html.ImgSrc("Sys_Active", "ProdData", Model.product.id, "BerImg", 205)"><em>施工前</em></li>
+        <li><img src="@Html.ImgSrc("Sys_Active", "ProdData", Model.product.id, "MidImg", 205)"><em>施工中</em></li>
+        <li><img src="@Html.ImgSrc("Sys_Active", "ProdData", Model.product.id, "AftImg", 205)"><em>施工後</em></li>
+    </ol>-->
+    @{
+
+        var imgs = Html.ImagesFancyBox("Sys_Active", "ProdData", Model.product.id, "ShowImg","s_120","s_505");
+    }
+
+    <div id="album" class="flexslider">
+        <ul class="slides">
+            @foreach(var img in imgs){
+                <li data-thumb="@img.B_Path">
+                <img src="@img.S_Path" />
+                </li>
+            }
+        </ul>
+        <em>完工</em>
+    </div><!-- album //-->
+
+    <script>
+        $(window).load(function () {
+            $('#album').flexslider({
+                animation: "fade",
+                controlNav: "thumbnails"
+            });
+        });
+    </script>
+
+    <h4 class="title-sub">工程說明 Project Description</h4>
+    @Html.Raw(Model.product.introduction)
+    <!-- 其他更多說明項目 -->
+    <div class="notice">
+        @Html.Raw(Model.product.specifications)
+    </div><!-- notice //-->
+
+</div><!-- content //-->

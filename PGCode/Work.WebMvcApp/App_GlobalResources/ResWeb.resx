@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="WebTitle" xml:space="preserve">
+    <value>崧賀營造有限公司,兆辰土木包工業,桃園建築工程,桃園土木工程,桃園廠房工程,桃園廠房新建,桃園廠房改建,桃園鋼構工程</value>
+  </data>
+  <data name="Err_LoginUnCorrect" xml:space="preserve">
+    <value>登入失败，请重新输Email及密码。</value>
+  </data>
+  <data name="Err_ConnectionServerOut" xml:space="preserve">
+    <value>连接服务器发生错误，请联络管理员。</value>
+  </data>
+  <data name="Info_NoShoppingItem" xml:space="preserve">
+    <value>尚未购买任何项目。</value>
+  </data>
+  <data name="CurrencySign" xml:space="preserve">
+    <value>¥</value>
+  </data>
+  <data name="MailAdmin" xml:space="preserve">
+    <value>Single Malt&lt;info@jcin.com.tw&gt;</value>
+  </data>
+  <data name="MailSubjectAddMember" xml:space="preserve">
+    <value>感谢您加入Single Malt会员</value>
+  </data>
+  <data name="Err_MailNotExist" xml:space="preserve">
+    <value>邮件账号不存在。</value>
+  </data>
+  <data name="MailSubjectRestPWD" xml:space="preserve">
+    <value>密码重设通知</value>
+  </data>
+  <data name="Err_LoginState" xml:space="preserve">
+    <value>账号已处于登录状态无法完成</value>
+  </data>
+  <data name="Err_LogoutState" xml:space="preserve">
+    <value>请先登录以完成该项作业</value>
+  </data>
+  <data name="Err_pwdHasBlank" xml:space="preserve">
+    <value>各密码字段不可以有空白</value>
+  </data>
+  <data name="MailSubjectOrderInfo" xml:space="preserve">
+    <value>Single Malt【订单信息】-测试中</value>
+  </data>
+  <data name="Err_MailHasExist" xml:space="preserve">
+    <value>电子邮件已存在。</value>
+  </data>
+  <data name="Err_ValideUnCorrect" xml:space="preserve">
+    <value>验证码不正确</value>
+  </data>
+  <data name="Err_PayHasFinished" xml:space="preserve">
+    <value>该笔订单已支付过</value>
+  </data>
+  <data name="PublicUrl" xml:space="preserve">
+    <value>http://www.whisky898.com</value>
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>崧賀營造有限公司,兆辰土木包工業</value>
+  </data>
+  <data name="Info_AmtChangeFinish" xml:space="preserve">
+    <value>数量更改完成。</value>
+  </data>
+  <data name="Info_ItemRemoveFinish" xml:space="preserve">
+    <value>该项产品删除完成。</value>
+  </data>
+  <data name="Err_PasswordConfirm" xml:space="preserve">
+    <value>确认密码不符</value>
+  </data>
+  <data name="Err_PasswordLength" xml:space="preserve">
+    <value>密码长度不符(至少6个字符)</value>
+  </data>
+  <data name="Err_PasswordRule" xml:space="preserve">
+    <value>密码规则不符(需包含英、数字)</value>
+  </data>
+  <data name="Err_MembernNoValidCode" xml:space="preserve">
+    <value>验证无效</value>
+  </data>
+  <data name="Err_MemberValidState" xml:space="preserve">
+    <value>该会员状态已无法验证，或已验证完成。</value>
+  </data>
+  <data name="Err_Field_Require" xml:space="preserve">
+    <value>此栏需填写</value>
+  </data>
+  <data name="Err_PasswordNotCorrect" xml:space="preserve">
+    <value>密码不正确</value>
+  </data>
+  <data name="Err_MemberStateNotAllowLogin" xml:space="preserve">
+    <value>该会员状态无法登录</value>
+  </data>
+  <data name="Info_MemberRegistStep1" xml:space="preserve">
+    <value>注册会员完成，请至Email信箱收取验证信件，以启动账号。(若找不到系统来信时请看有无被移至垃圾信箱)</value>
+  </data>
+  <data name="Info_AddCartItemOK" xml:space="preserve">
+    <value>产品加入购物车完成。</value>
+  </data>
+  <data name="Info_MemberDataModifyOK" xml:space="preserve">
+    <value>会员数据更新完成。</value>
+  </data>
+  <data name="Info_PasswordDataModifyOK" xml:space="preserve">
+    <value>密码更更改完成，下次登录请用新密码登录。</value>
+  </data>
+  <data name="MailSubjectPWDReSend" xml:space="preserve">
+    <value>Single Malt B2B 密码重寄通知</value>
+  </data>
+  <data name="Err_Field_Email_Format" xml:space="preserve">
+    <value>Email格式不正确</value>
+  </data>
+  <data name="Err_RequireData" xml:space="preserve">
+    <value>此字段需填写。</value>
+  </data>
+  <data name="Err_SessionLost" xml:space="preserve">
+    <value>Session已遗失。</value>
+  </data>
+  <data name="Info_PWDResend" xml:space="preserve">
+    <value>密码已寄出，请至您的信箱收取。</value>
+  </data>
+  <data name="Info_PWD_Principle" xml:space="preserve">
+    <value>密码须包括英数及六个字元以上</value>
+  </data>
+</root>

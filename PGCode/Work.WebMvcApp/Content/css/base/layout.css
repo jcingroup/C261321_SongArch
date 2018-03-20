@@ -1,0 +1,207 @@
+﻿@charset "utf-8";
+
+/*      layout
+-----------------------------------------------------------------------*/
+#container {
+	min-width:980px;
+	height:100%;
+	}
+body>#container {
+	height:auto;
+	min-height: 100%;
+	}
+
+#header,
+#main,
+#footer {
+	text-align:left;
+	width:980px;
+	margin:auto; *margin:0;
+	overflow:hidden;
+	position:relative;
+	}
+
+#header {
+	width:100%;
+	height:302px;
+	z-index:1;
+	}
+
+#main {
+	padding-bottom:76px;
+	z-index:2;
+	}
+
+#footer {
+	background: url('../../images/footerBg.gif') repeat-x 0 0;
+	margin-top:-75px;
+	clear:both;
+	z-index:3;
+	}
+
+#sidebar {
+	float:left;
+	width:220px;
+	}
+
+#content {
+	float:right;
+	width:736px;
+	padding-bottom:30px;
+	margin-top:15px;
+	}
+
+
+/*      header
+-----------------------------------------------------------------------*/
+/* logo */
+h1 {
+	background: url('../../images/logo.gif') no-repeat 0 0;
+	text-indent:-9999px;
+	width:341px; height:86px;
+	position:absolute;
+	left:50%; top:15px;
+	margin-left:-490px;
+	cursor:pointer; cursor:hand;
+	}
+
+#banner {
+	width:100%;
+	position:absolute;
+	top:117px;
+	}
+#banner li {
+	background:url('../../images/banner.jpg') no-repeat center 0;
+	height:185px;
+	}
+#banner .i2 { background-image:url('../../images/banner2.jpg') }
+#banner .i3 { background-image:url('../../images/banner3.jpg') }
+
+/* 主選單 */
+#menu-icon,#menu-icon2 {
+	display:none;
+	}
+#menu {
+	position:absolute;
+	left:50%; top:0;
+	margin-left:-118px;
+	}
+@media (max-width: 64em) {
+	#menu {
+		left: auto;
+		right: 0;
+		margin-left: 0;
+	}
+}
+#menu li {
+	display:inline; float:left;
+	margin-left:10px;
+	}
+#menu a {
+	background-position: center 27px;
+	display:block;
+	color:#fff;
+	font-size:1.35em;
+	font-weight:bold;
+	padding:50px 18px 40px 18px;
+	*zoom:1;
+
+	-webkit-transition: background .5s ease;
+	-moz-transition: background .5s ease;
+	-o-transition: background .5s ease;
+	transition: background .5s ease;
+	}
+
+#menu a:hover, #menu a:active,
+.AboutUs #menu .nav1,
+.Service #menu .nav2,
+.Products #menu .nav3,
+.Info #menu .nav4,
+.ContactUs #menu .nav5 {
+	background: #DD6542 url('../../images/icon-nav.gif') no-repeat center 27px;
+	}
+
+
+/*      sidebar
+-----------------------------------------------------------------------*/
+#sidebar h4 {
+	background: url('../../images/title-left.gif') no-repeat center 0;
+	text-indent:-9999px;
+	height:36px;
+	}
+#sidebar dt {
+	background-attachment: fixed;
+	background: url('../../images/icon-left.gif') no-repeat 0 0;
+	color:#DD6542;
+	font-size:1.35em;
+	font-weight:bold;
+	padding:10px 0 10px 42px;
+	margin:20px 0 3px 0;
+	}
+#sidebar .sub2 { background-position: 0 -59px; }
+#sidebar .sub3 { background-position: 0 -118px; }
+#sidebar dd {
+	margin:-3px 0 8px 42px;
+	}
+#sidebar dd a {
+	color:#333;
+	font-size:.9em;
+	line-height:120%;
+	}
+#sidebar dd a:hover,
+#sidebar dd a:active,
+#sidebar dd a.current {
+	color:#1EBFD1;
+	}
+
+
+/*      footer
+-----------------------------------------------------------------------*/
+.menu-b li {
+	float:left; display:inline;
+	margin:9px 17px 9px 15px;
+	}
+.menu-b a {
+	color:#fff;
+	font-weight:bold;
+	}
+.menu-b a:hover {
+	color:#C7D6D3
+	}
+
+.copyright {
+	clear:both;
+	color:#BFBEA8;
+	font-size:.8em;
+	font-family: 'Bookman Old Style', serif;
+	}
+.copyright i {
+	color:#E0E0E0;
+	font-size:.8em;
+	font-style:normal;
+	}
+
+/* 社群link */
+.club {
+	position:absolute;
+	right:0; top:5px;
+	}
+.club li {
+	display:inline; float:left;
+	margin-right:10px;
+	}
+.club a {
+	background-attachment:fixed;
+	background: url('../../images/icon-club.gif') no-repeat 0 0;
+	display:block;
+	text-indent:-9999px;
+	width:12px; height:23px;
+
+	-webkit-transition: background .5s ease;
+	-moz-transition: background .5s ease;
+	-o-transition: background .5s ease;
+	transition: background .5s ease;
+	}
+.club a:hover { background-image:url('../../images/icon-club2.gif') }
+.club .twi { width:27px; background-position: -21px 0; }
+

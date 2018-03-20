@@ -1,0 +1,217 @@
+﻿@model ProcCore.Business.Logic.m_Product
+@using ProcCore.JqueryHelp;
+@using ProcCore.JqueryHelp.FormvValidate;
+@using ProcCore.JqueryHelp.CustomButton;
+@using ProcCore.Business.Base;
+@section IncludeScript{
+    @Html.Partial("Manage/includeScript_Comm")
+    <script type="text/javascript" src="~/_Code/ckeditor_4.1.2_full/ckeditor.js"></script>
+    <script type="text/javascript" src="~/_Code/ckfinder_aspnet_2.3.1/ckfinder.js"></script>
+    <style>
+        .sel-file {
+            padding: 1px 5px;
+            font-size: smaller;
+            color: grey;
+        }
+
+            .sel-file img {
+                float: left;
+                width: 18px;
+                height: 18px;
+                padding-right: 10px;
+            }
+
+        .progress {
+            display: inline-block;
+            width: 100px;
+            border: 3px groove #CCC;
+        }
+
+            .progress div {
+                font-size: smaller;
+                background-color: #525ae9;
+                width: 0;
+            }
+    </style>
+    <script src="~/_Code/jqScript/angular-file-upload/angular-file-upload-html5-shim.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
+    <script src="~/_Code/jqScript/angular-file-upload/angular-file-upload.min.js"></script>
+
+    @Html.Partial("Manage/includeScript_FineUpload")
+    <script>
+        var agApp = angular.module('angularApp', ['angularFileUpload']);
+        agApp.controller('ctr_frm', function ($scope, $http, $upload, $timeout) {
+
+        });
+    </script>
+}
+@section menu{
+    @Html.Raw(Session["MenuHtmlString"].ToString())
+}
+
+@{
+    FormValidateSetup val_frm_a = new FormValidateSetup(new jqSelector() { IdName = CommWebSetup.eleNameMasterDataForm });
+
+    jqSelector jq_for_btn_rtn = new jqSelector() { IdName = "btn_return_list" };
+    jqSelector jq_for_btn_sbm = new jqSelector() { IdName = "btn_submit" };
+
+    jqSelector jq_for_btn_opimgList_fmwk = new jqSelector() { IdName = "btn_opdlg_imgs_list" };
+    jqSelector jq_for_btn_opimgProd_fmwk = new jqSelector() { IdName = "btn_opdlg_imgs_prod" };
+
+    funcMethodModule func = Html.CommSetFormOnSuccesss();
+}
+
+@using (Ajax.BeginForm(null, null, new AjaxOptions() { Url = Url.Action(CommWebSetup.acNameMasterDataUpdateData), HttpMethod = "post", OnSuccess = func.funcName }, new { id = CommWebSetup.eleNameMasterDataForm, ng_controller = "ctr_frm" }))
+{
+    @Html.HiddenFor(x => x.id, new { @id = "id" })
+    @Html.HiddenFor(x => x.EditType)
+    <input type="hidden" id="returnQueryString" name="returnQueryString" value="@Html.Raw(ViewBag.QueryString)" />
+    <div class="@ViewBag.css_Edit_Master_CaptionCss">
+        @ViewBag.Caption
+    </div>
+    <fieldset>
+        <legend class="@ViewBag.css_Edit_Subtitle_CaptionCss">@Html.Lang("BaseData")</legend>
+        <table>
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Resources.Res.Info_FileUploader</th>
+                <td>
+                    <button type="button" id="btn_opdlg_imgs_prod">施工圖片上傳</button>
+                </td>
+            </tr>
+
+            <tr ng-show="false">
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.product_serial)</th>
+                <td>@Html.TextBoxFor(x => x.product_serial, new { maxlength = 32, size = 32, required = "true" })</td>
+            </tr>
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.product_name)</th>
+                <td>@Html.TextBoxFor(x => x.product_name, new { maxlength = 64, size = 64, required = "true" })</td>
+            </tr>
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.sort)</th>
+                <td>@Html.TextBoxFor(x => x.sort, new { maxlength = 3, type = "number", required = "true" })
+                    @Resources.Res.Info_Sort_Memo
+                </td>
+            </tr>
+            <tr ng-show="false">
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.original_price)</th>
+                <td>@Html.TextBoxFor(x => x.original_price, new { maxlength = 8, type = "number", required = "true" })</td>
+            </tr>
+            <tr ng-show="false">
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.special_price)</th>
+                <td>@Html.TextBoxFor(x => x.special_price, new { maxlength = 8, type = "number" })</td>
+            </tr>
+            <tr ng-show="false">
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.member_price)</th>
+                <td>@Html.TextBoxFor(x => x.member_price, new { maxlength = 8, type = "number" })</td>
+            </tr>
+            <tr ng-show="false">
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.cost_price)</th>
+                <td>@Html.TextBoxFor(x => x.cost_price, new { maxlength = 8, type = "number", required = "true" })</td>
+            </tr>
+            <tr ng-show="false">
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.currency)</th>
+                <td>
+                    @Html.DropDownListFor(x => x.currency, (List<SelectListItem>)ViewBag.options_currency)
+                </td>
+            </tr>
+            <tr ng-show="false">
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.unit_name)</th>
+                <td>@Html.TextBoxFor(x => x.unit_name, new { maxlength = 12, size = 12, required = "true" })</td>
+            </tr>
+            <tr ng-show="false">
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.can_sell_amt)</th>
+                <td>@Html.TextBoxFor(x => x.can_sell_amt, new { maxlength = 3, type = "number", required = "true" })</td>
+            </tr>
+            <tr>
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.product_category_l1_id)</th>
+                <td>
+                    @Html.DropDownListFor(x => x.product_category_l1_id, (List<SelectListItem>)ViewBag.options_category_l1, new { ng_show = false })
+                    @Html.DropDownListFor(x => x.product_category_l2_id, (List<SelectListItem>)ViewBag.options_category_l2, new { ng_show = false })
+                    @Html.DropDownListFor(x => x.product_category, (List<SelectListItem>)ViewBag.options_category)
+                </td>
+            </tr>
+            <tr ng-show="false">
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.is_shelf)</th>
+                <td>
+                    @Html.RadioButtonFor(x => x.is_shelf, true) 是 @Html.RadioButtonFor(x => x.is_shelf, false) 否
+                </td>
+            </tr>
+            <tr ng-show="false">
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.currency)</th>
+                <td>
+                    @Html.DropDownListFor(x => x.currency, (List<SelectListItem>)ViewBag.options_currency)
+                </td>
+            </tr>
+            <tr ng-show="false">
+                <th class="@ViewBag.css_EditFormFieldsNameCss">@Html.FieldLang(x => x.product_state)</th>
+                <td>
+                    @Html.DropDownListFor(x => x.product_state, (List<SelectListItem>)ViewBag.options_product_state)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset>
+        <legend class="@ViewBag.css_Edit_Subtitle_CaptionCss">@Html.FieldLang(x => x.introduction)</legend>
+        @Html.TextAreaFor(x => x.introduction, 16, 120, null)
+    </fieldset>
+    <fieldset ng-show="false">
+        <legend class="@ViewBag.css_Edit_Subtitle_CaptionCss">@Html.FieldLang(x => x.specifications)</legend>
+        @Html.TextAreaFor(x => x.specifications, 16, 120, null)
+    </fieldset>
+    <div class="@ViewBag.css_EditFormNavigationFunctionCss">
+        <button type="submit" id="@jq_for_btn_sbm.IdName">
+            @(Model.EditType == EditModeType.Insert ? Resources.Res.Button_Sure_Insert : Resources.Res.Button_Sure_Modify)
+        </button>
+        <button type="button" id="@jq_for_btn_rtn.IdName">@Resources.Res.Button_Return</button>
+    </div>
+}
+@Html.Partial("Manage/includeFiledownload_iFrame")
+@Html.Partial("Manage/FineUploadTemp", new DotWeb.fineuploadModal() { id = @Model.id, prefix = "hd_ImageUpB", filekind = "ShowImg", open_button = jq_for_btn_opimgProd_fmwk.IdName, title = "其他圖片上傳" })
+@Html.Partial("Manage/FineUploadTemp", new DotWeb.fineuploadModal() { id = @Model.id, prefix = "hd_ImageUp_Ber", filekind = "BerImg", open_button = "btn_ber", title = "施工前" })
+@Html.Partial("Manage/FineUploadTemp", new DotWeb.fineuploadModal() { id = @Model.id, prefix = "hd_ImageUp_Mid", filekind = "MidImg", open_button = "btn_mid", title = "施工中" })
+@Html.Partial("Manage/FineUploadTemp", new DotWeb.fineuploadModal() { id = @Model.id, prefix = "hd_ImageUp_Aft", filekind = "AftImg", open_button = "btn_aft", title = "施工後" })
+@{
+    //===
+    jqButton btn_sbm_fmwk = new jqButton(new jqSelector() { IdName = jq_for_btn_sbm.IdName });
+    btn_sbm_fmwk.options.icons.primary = FrameworkIcons.ui_icon_check;
+
+    jqButton btn_rtn_fmwk = new jqButton(jq_for_btn_rtn);
+    btn_rtn_fmwk.options.icons.primary = FrameworkIcons.ui_icon_arrowreturnthick_1_w;
+
+    jqElementEvent btn_rtn_evt_clk = new jqElementEvent(jq_for_btn_rtn);
+    btn_rtn_evt_clk.events.Add(new jqElementEvent.jqEvents() { htmlElementEvent = HtmlObjectEvent.click, funcString = "document.location.href='" + Url.Action(CommWebSetup.acNameEditFormReturnGridList) + "?' + $('#returnQueryString').val();" });
+
+    jqButton btn_opimgList_fmwk = new jqButton(new jqSelector() { IdName = jq_for_btn_opimgList_fmwk.IdName });
+    btn_opimgList_fmwk.options.icons.primary = FrameworkIcons.ui_icon_arrow_4_diag;
+
+    jqButton btn_opimgProd_fmwk = new jqButton(new jqSelector() { IdName = jq_for_btn_opimgProd_fmwk.IdName });
+    btn_opimgProd_fmwk.options.icons.primary = FrameworkIcons.ui_icon_arrow_4_diag;
+
+}
+<script type="text/javascript">
+    $('#product_category_l1_id').selectajax({
+        relation_element: $('#product_category_l2_id'),
+        master_value: "@Model.product_category_l1_id",
+        relation_value: "@Model.product_category_l2_id",
+        data_url: gb_approot + "_code/Ashx/AjaxGetProductSubKind.ashx"
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#btn_ber').button({ icons: { primary: 'ui-icon-arrow-4-diag' } });
+        $('#btn_mid').button({ icons: { primary: 'ui-icon-arrow-4-diag' } });
+        $('#btn_aft').button({ icons: { primary: 'ui-icon-arrow-4-diag' } });
+
+        @Html.Raw(btn_opimgList_fmwk.ToScriptString())
+        @Html.Raw(btn_opimgProd_fmwk.ToScriptString())
+        @Html.Raw(btn_sbm_fmwk.ToScriptString())
+        @Html.Raw(btn_rtn_fmwk.ToScriptString())
+        @Html.Raw(btn_rtn_evt_clk.ToScriptString())
+        @Html.Raw(func.ToScriptString())
+        @Html.Raw(Html.SetCommCKEditor2("introduction", true))
+        @Html.Raw(Html.SetCommCKEditor2("specifications", true))
+    });
+    (function ($) {
+    })(jQuery);
+</script>

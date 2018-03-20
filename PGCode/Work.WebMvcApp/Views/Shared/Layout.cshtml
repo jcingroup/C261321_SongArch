@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = Resources.ResWeb.WebTitle;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="桃園建築工程,桃園土木工程,桃園廠房工程,桃園廠房新建,桃園廠房改建,桃園鋼構工程,混凝土澆置,H型鋼&C型鋼&蓋板,2000psiPC,3000psiPC,水泥粉刷,板模組立,挖土棄土,SRC房,排水陰井,碎石級配,整地,綁鐵">
+    <title>::@ViewBag.Title::@ViewBag.PageTitle</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="~/Scripts/jquery.flexslider-min.js"></script>
+    <link rel="stylesheet" href="~/Content/css/base/flexslider.css">
+    @RenderSection("head", false)
+</head>
+<body class="@ViewBag.BodyClass">
+    <div id="container">
+        <div id="header">
+            <h1 onclick="location.href='@Url.Content("~/index")'">崧賀營造有限公司 統編:70604072,兆辰土木包工業 統編:08388194</h1>
+
+            <ul id="menu">
+                <li><a class="nav1" href="~/AboutUs">公司簡介</a></li>
+                <li><a class="nav2" href="~/Service">服務項目</a></li>
+                <li><a class="nav3" href="~/Products">工程實蹟</a></li>
+                <li><a class="nav4" href="~/Info">客戶實蹟</a></li>
+                <li><a class="nav5" href="~/ContactUs">聯絡我們</a></li>
+            </ul>
+
+            <div id="banner" class="flexslider">
+                <ul class="slides">
+                    <li class="i1"></li>
+                    <li class="i2"></li>
+                    <li class="i3"></li>
+                </ul>
+            </div><!-- slider //-->
+
+            <script>
+                $(window).load(function () {
+                    $('#banner').flexslider({
+                        slideshowSpeed: 6000
+                    });
+                });
+            </script>
+
+        </div><!-- header //-->
+
+        <div id="main">
+            @RenderBody()
+        </div><!-- main //-->
+
+    </div><!-- container //-->
+
+    <div id="footer">
+        <ul class="menu-b">
+            <li><a href="~/AboutUs">公司簡介</a></li>
+            <li><a href="~/Service">服務項目</a></li>
+            <li><a href="~/Products">工程實蹟</a></li>
+            <li><a href="~/Info">客戶實蹟</a></li>
+            <li><a href="~/ContactUs">聯絡我們</a></li>
+        </ul>
+        <div class="copyright">Song He & Zhao Chen &copy; 2013 <i>The Best View 1024*768+, chrome, FireFox, IE9+</i></div>
+        <ul class="club">
+            <li><a class="fb" href="#">Facebook</a></li>
+            <li><a class="twi" href="#">Twitter</a></li>
+        </ul>
+    </div><!-- footer //-->
+    <script src="~/Scripts/GoogleAnalytics.js"></script>
+</body>
+</html>

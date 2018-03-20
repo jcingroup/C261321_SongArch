@@ -1,0 +1,22 @@
+﻿@model ProcCore.Business.Logic.m_Product_Category
+@using ProcCore.Business.Logic;
+@{
+    Layout = "~/Views/Shared/Layout.cshtml";
+    Dictionary<String, String> className = new Dictionary<String, String>();
+    className.Add(CodeSheet.ProductCategory.Building.Code, "intro");
+    className.Add(CodeSheet.ProductCategory.Factory.Code, "intro2");
+    className.Add(CodeSheet.ProductCategory.Steel.Code, "intro3");       
+}
+@section head {
+    <link rel="stylesheet" href="~/Content/css/index.css">
+}
+@foreach (var md in Model.Product_Category_Fix)
+{
+    <dl class="@className[md.Category_Code]">
+        <dt>@md.Category_Name<!--<em>英文小寫</em>--></dt>
+        @foreach (var p in md.Product)
+        {
+        <dd><a href="~/Products/?id=@p.id">@p.product_name</a></dd>
+        }
+    </dl>
+}

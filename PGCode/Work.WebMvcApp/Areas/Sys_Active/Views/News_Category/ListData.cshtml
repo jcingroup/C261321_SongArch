@@ -1,0 +1,72 @@
+﻿@model ProcCore.Business.Logic.q_News_Category
+@using ProcCore.Business.Logic.TablesDescription
+@using ProcCore.JqueryHelp
+@using ProcCore.JqueryHelp.JQGridScript
+@using DotWeb.CommSetup
+
+@{
+    News_Category Tab = new News_Category();
+}
+@section IncludeScript{
+    @Html.Partial("Manage/includeScript_Comm")
+    @Html.Partial("Manage/includeScript_Grid")
+}
+
+@section menu{
+    @Html.Raw(Session["MenuHtmlString"].ToString())
+}
+
+@{
+
+    jqGrid gridObj = Html.jqGrid_Edit(
+CommWebSetup.MasterGridID,
+(String)ViewBag.Caption,
+ViewData["Page"].ToString(),
+Url.Action(CommWebSetup.acNameMasterDataGridUrl),
+Url.Action(CommWebSetup.acNameMasterDataDelete),
+Url.Action(CommWebSetup.acNameMasterDataUpdateData),
+CommWebSetup.MasterGridDefHight, null,
+new MakeColumnModule() { CN = Html.FLang(Tab.news_category_id.M), CM = { name = Tab.news_category_id.M, width = "30px", align = "center", editable = true, hidden = true, hidedlg = true } },
+new MakeColumnModule() { CN = Html.FLang(Tab.category_name.M), CM = { name = Tab.category_name.M, width = "220px", editable = true } },
+new MakeColumnModule() { CN = Html.FLang(Tab.sort.M), CM = { name = Tab.sort.M, width = "90px", editable = true } },
+new MakeColumnModule() { CN = Html.FLang(Tab.is_open.M), CM = { name = Tab.is_open.M, width = "90px", editable = true, edittype = "checkbox", editoptions = new jqGrid.colObject.editOptions() { value = "True:False" }, formatterstring = "checkbox", formatoptions = new jqGrid.colObject.FormatOptions() {disabled=true } } }
+);
+    //設定主Grid的功能Button區
+    gridObj.GridModule.postData = new DataModule();
+    gridObj.GridModule.multiboxonly = true;
+    gridObj.GridModule.multiselect = false;
+
+    gridObj.NavGridModule.navOption.add = true;
+    gridObj.NavGridModule.navOption.edit = true;
+    gridObj.NavGridModule.navOption.del = true;
+
+    gridObj.NavGridModule.Add.closeAfterAdd = true;
+    gridObj.NavGridModule.Add.closeAfterEdit = true;
+
+    gridObj.NavGridModule.Add.afterShowForm = new funcMethodModule() { MakeStyle = funcMethodModule.funcMakeStyle.funcConext };
+    gridObj.NavGridModule.Add.afterShowForm.funcString = "$.ajax_MasterFormShowAfterHandle();";
+
+    gridObj.NavGridModule.Del.afterSubmit = new funcMethodModule() { MakeStyle = funcMethodModule.funcMakeStyle.onlyName };
+    gridObj.NavGridModule.Del.afterSubmit.funcName = "$.ajax_MasterAfterDelete";
+}
+@Html.Raw(gridObj.ToScriptString())
+<script type="text/javascript">
+    $(document).ready(function () { });
+    (function ($) {
+        $.ajax_MasterFormShowAfterHandle = function () {
+            $.post('ajax_GetAddNewID').done(function (data, textStatus, jqXHR) {
+                var jsonobj = jQuery.parseJSON(data);
+                $('#news_category_id').val(jsonobj);
+            })
+        }
+
+        $.ajax_MasterAfterDelete = function (response,postdata) {
+            var jsonobj = jQuery.parseJSON(response.responseText);
+            if (!jsonobj.result) {
+                alert(jsonobj.message);
+            }
+            return [true, '', response.responseText];
+        }
+
+    })(jQuery);
+</script>
